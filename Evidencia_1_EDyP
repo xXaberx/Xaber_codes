@@ -1,0 +1,373 @@
+#Intento de evidencia 1 de Estructura de datos y su procesamiento
+#print("Hola mundo")
+
+import random
+import datetime
+
+eventos_registrados = {}
+salas_registradas = {}
+clientes_registrados = {}
+"""
+salas_registradas [1] = ["Orion", 1500]
+salas_registradas [2] = ["Vicente", 2000]
+salas_registradas [3] = ["Venecia", 3500]
+clientes_registrados [123] = ["Ricardo"]
+clientes_registrados [688] = ["Fernando"]
+clientes_registrados [791] = ["Angel"]
+"""
+
+
+print("""
+**********************************************************************************
+***************************** TE DAMOS LA BIENVENIDA ***************************** """)
+while True:
+    opcion_menu=input("""
+**********************************************************************************
+******************************** MENU DE OPCIONES ********************************
+***** [1].- Registrar la reservacion de una sala                             *****
+***** [2].- Editar el nombre del evento de una reservacion                   *****
+***** [3].- Consultar las reservaciones existentes para una fecha especifica *****
+***** [4].- Registrar a un nuevo cliente                                     *****
+***** [5].- Registrar una sala                                               *****
+***** [6].- Salir                                                            *****
+**************************** Elija una opcion del menu ***************************
+**********************************************************************************\n""")
+    if (opcion_menu.isspace() or len(opcion_menu) <= 0):
+        print("""
+*********************************************
+***** Elija una opcion valida del menu ******
+*********************************************""")
+        continue
+# Opcion [1].- Registrar la reservacion de una sala
+    elif opcion_menu == "1":
+        print("""
+********************************************************
+****** [1].- Registrar la reservacion de una sala ******
+********************************************************""")
+        print("""
+**********************************************
+***** Ingrese los datos correspondientes *****
+**********************************************""")
+        while True:
+            lista_clientes = list(clientes_registrados.items())
+            print(f"""
+*** Clientes registrados ***
+Clave /// Nombre""")
+            for clave_cliente,datos_cliente in lista_clientes:
+                print(f"""
+{clave_cliente}, {datos_cliente[0]}
+--------------------------------------""")
+            try:
+                confirmacion_clave=int(input("***** Clave de cliente ******\n"))
+                if confirmacion_clave in clientes_registrados:
+                    print("""
+**************************************************************
+********************* Cliente encontrado *********************
+*********************   A continuacion   *********************
+*** Ingrese los datos correspondientes para la reservacion ***
+**************************************************************""")
+                    break
+                else:
+                    print("""
+***************************************************
+*** Clave inexistente, ingrese una clave valida ***
+***************************************************""")
+                    continue
+            except:
+                print("""
+*************************************************************
+*** Clave en formato incorrecto, escriba una clave valida ***
+*************************************************************""")
+                continue
+        while True:
+            lista_salas = list(salas_registradas.items())
+            print(f"""
+***** Salas registradas *****
+Clave /// Nombre /// Capacidad""")
+            for clave_sala,datos_sala in lista_salas:
+                    print(f"""
+{clave_sala} // {datos_sala[0]} // {datos_sala[1]}
+----------------------------------------------""")
+            try:
+                sala_evento = int(input("*** Sala donde se realizara el evento ***\n"))
+                lista_salas = list(salas_registradas.items())
+                if sala_evento in salas_registradas:
+                    print("""
+**************************************************************
+*********************** Sala encontrada **********************
+*********************   A continuacion   *********************
+*** Ingrese los datos correspondientes para la reservacion ***
+**************************************************************""")
+                    break
+                else:
+                    print("""
+**********************************
+******* Sala no encontrada *******
+*** Ingrese una sala existente ***
+**********************************""")
+                continue
+            except:
+                print("""
+****************************************************************************
+*** Formato de clave de sala no valido, ingrese una clave de sala valida ***
+****************************************************************************""")
+                continue
+        while True:
+            nombre_evento = input("*** Nombre del evento ***\n")
+            if (nombre_evento.isspace() or len(nombre_evento) <= 0):
+                print("""
+***********************************************
+*** El nombre del evento no puede omitirse ****
+************** Ingrese un nombre **************
+***********************************************""")
+            else:
+                confirmacion_nombre_evento = input("*** ¿Esta segur@ que quiere elejir este nombre para su evento? (S/N) ***\n")
+                if confirmacion_nombre_evento == "S" or confirmacion_nombre_evento == "s":
+                    print("*** Nombre confirmado ***")
+                    break
+                elif confirmacion_nombre_evento == "N" or confirmacion_nombre_evento == "n":
+                    print("""
+****************************************
+********* Nombre no confirmado *********
+*** Ingrese el nombre para su evento ***
+****************************************""")
+                    continue
+                else:
+                    print("""
+********************************
+*** Opcion elejida no valida ***
+********************************""")
+        while True:
+            try:
+                fecha_evento_str = input("*** Fecha del evento [dd/mm/aaaa] ***\n")
+                fecha_evento_transformada = datetime.datetime.strptime(fecha_evento_str, "%d/%m/%Y").date()
+            except:
+                print("""
+*******************************************
+*** Fecha escrita en formato incorrecto ***
+*******************************************""")
+                continue
+            fecha_actual = datetime.date.today()
+            dia_actual= fecha_actual.day
+            cant_dias = 2
+            if (fecha_actual + datetime.timedelta(days=+cant_dias)) <= fecha_evento_transformada:
+                break
+            else:
+                print("""
+*********************************************************************
+************************** Fecha no valida **************************
+*** el evento debe registrarse con almenos 2 dias de anticipacion ***
+*********************************************************************
+""")
+                continue
+        while True:
+            turno_evento = input("*** Turno del evento: [M, V, N] ***\n")
+            if turno_evento == "M" or turno_evento == "V" or turno_evento == "N":
+                lista_eventos = list(eventos_registrados.items())
+                fecha_reservada = ""
+                turno_reservado = ""
+                for clave_eventos, datos_evento in lista_eventos:
+                    fecha_reservada = datos_evento[3]
+                    turno_reservado = datos_evento[4]
+                if turno_evento == turno_reservado and fecha_evento_transformada == fecha_reservada:
+                    print("""
+************************************
+********** Turno ocupado ***********
+**** Elija un horario diferente ****
+************************************""")
+                    continue
+                else:
+                    break
+            else:
+                print("""
+*****************************
+****** Opcion invalida ******
+*** Elija un turno valido ***
+*****************************""")
+                continue
+        while True:
+            confirmacion_registro_evento = input("*** ¿Segur@ que quiere confirmar el registro de este evento? (S/N) ***\n")
+            if confirmacion_registro_evento == "S" or confirmacion_registro_evento == "s":
+                    for clave_cliente, datos_cliente in lista_clientes:
+                        if confirmacion_clave == clave_cliente:
+                            nombre_cliente = datos_cliente[0]
+                            clave_evento = random.randrange(100, 1000)
+                            lista_clientes = list(clientes_registrados.items())
+                            datos_evento = [clave_cliente, nombre_cliente, nombre_evento, fecha_evento_transformada, turno_evento, sala_evento]
+                            eventos_registrados [clave_evento] = datos_evento
+                            print(f"""
+****************************************
+**** Evento registrado exitosamente ****
+******** Clave del evento: {clave_evento} *********
+****************************************""")
+                    break
+            elif confirmacion_registro_evento == "N" or confirmacion_registro_evento == "n":
+                print("""
+****************************************
+********* Evento no confirmado *********
+***** Regresando al menu principal *****
+****************************************""")
+                break
+            else:
+                print("""
+************************************
+***** Opcion elejida no valida *****
+************************************""")
+                continue
+# Opcion [2].- Editar el nombre del evento de una reservacion
+    elif opcion_menu == "2":
+        print("""
+******************************************************************
+****** [2].- Editar el nombre del evento de una reservacion ******
+******************************************************************""")
+        lista_eventos = list(eventos_registrados.items())
+        while True:
+            print("*** Ingrese los datos correspondientes ***")
+            print(f"""
+*** Clave // Sala // Nombre // Fecha // Turno ***""")
+            for clave_eventos, datos_evento in lista_eventos:
+                print(f"""
+{clave_eventos} // {datos_evento[5]} // {datos_evento[0]} // {datos_evento[1]} // {datos_evento[2]}
+------------------------------------------------------------------------------""")
+            clave_edicion_evento = int(input("*** Evento que decee modificar ***\n"))
+            if clave_edicion_evento in eventos_registrados:
+                nuevo_nombre_evento = input("*** Nuevo nombre para el evento ***\n")
+                print("""
+***************************************
+***** Evento modificada con exito *****
+***************************************""")
+                datos_evento = [clave_cliente, nombre_cliente, nuevo_nombre_evento, fecha_evento_transformada, turno_evento, sala_evento]
+                eventos_registrados [clave_evento] = datos_evento
+                break
+            else:
+                print("""
+*********************************
+******* Sala no encontrada ******
+**** Ingrese una sala valida ****
+*********************************""")
+# Opcion [3].- Consultar las reservaciones existentes para una fecha especifica
+    elif opcion_menu == "3":
+        lista_eventos = list(eventos_registrados.items())
+        fecha_consulta_str = input("Ingese la fecha de consulta\n")
+        fecha_consulta_transformada = datetime.datetime.strptime(fecha_consulta_str, "%d/%m/%Y").date()
+        print(f"""
+***********************************************************************
+****** REPORTE DE RESERVACIONES PARA EL DIA {fecha_consulta_str} ******
+******** SALA /// CLIENTE /////// EVENTO ////// TURNO ********""")
+        for clave_evento, datos_evento in lista_eventos:
+            if fecha_consulta_transformada == datos_evento[3]:
+                print(f"""
+*** {datos_evento[5]} /////// {datos_evento[1]} /////// {datos_evento[2]} /////// {datos_evento[4]}  ***
+-----------------------------------------------------------------------------""")
+        print("""
+******************************* FIN DEL REPORTE *******************************""")
+            #else:
+                #print("""
+#***********************************************************************
+#******************** FECHA SIN EVENTOS REGISTRADOS ********************
+#*************************** FIN DEL REPORTE ***************************""")
+# Opcion [4].- Registrar a un nuevo cliente
+    elif opcion_menu == "4":
+        print("""
+*************************************************
+****** [4].- Registrar a un nuevo cliente  ******
+*************************************************""")
+        print("Ingrese los datos correspondientes")
+        nombre_cliente = input("Nombre de cliente\n")
+        if (nombre_cliente.isspace() or len(nombre_cliente) <= 0):
+            print("""
+***********************************************
+*** El nombre del cliente no puede omitirse ***
+************** Ingrese un nombre **************
+***********************************************""")
+        else:
+            clave_cliente = random.randrange(100, 1000)
+            if clave_cliente in clientes_registrados:
+                continue
+            else:
+                print(f"""
+*********************************
+******* Cliente registrado ******
+***** Clave de cliente: {clave_cliente} *****
+*********************************""")
+        datos_cliente = [nombre_cliente]
+        clientes_registrados[clave_cliente] = datos_cliente
+# Opcion [5].- Registrar una nueva sala
+    elif opcion_menu == "5":
+        print("""
+********************************************
+****** [5].- Registrar una nueva sala ******
+********************************************""")
+        print("""
+********************************************
+**** Ingrese los datos correspondientes ****
+********************************************""")
+        while True:
+            nombre_sala = input("*** Nombre de la sala ***\n")
+            if (nombre_sala.isspace() or len(nombre_sala) <= 0):
+                print("""
+***********************************************
+*** El nombre del evento no puede omitirse ****
+************** Ingrese un nombre **************
+***********************************************""")
+            else:
+                confirmacion_nombre_sala = input("*** ¿Esta segur@ que quiere elejir este nombre para la nueva sala? (S/N) ***\n")
+                if confirmacion_nombre_sala == "S" or confirmacion_nombre_sala == "s":
+                    print("*** Nombre confirmado ***")
+                    break
+                elif confirmacion_nombre_sala == "N" or confirmacion_nombre_sala == "n":
+                    print("""
+****************************************
+********* Nombre no confirmado *********
+**** Ingrese el nombre para la sala ****
+****************************************""")
+                    continue
+                else:
+                    print("""
+********************************
+*** Opcion elejida no valida ***
+********************************""")
+                    continue
+        try:
+            cupo_sala = int(input("*** Cupo de la sala ***\n"))
+            clave_sala=max(list(salas_registradas.keys()),default=0)+1
+            print(f"""
+****************************************
+************ Sala registrada ***********
+ ******** Numero de la sala: {clave_sala} ********
+****************************************""")
+            datos_sala = [nombre_sala, cupo_sala]
+            salas_registradas[clave_sala] = datos_sala
+        except:
+            print("""
+*********************************************
+** Cupo no valido o en un formato invalido **
+*********************************************""")
+            continue
+# Opcion [6].- Salir
+    elif opcion_menu == "6":
+        print("""
+*******************************
+********* [6].- Salir *********
+***** programa suspendido *****
+*******************************""")
+        break
+    else:
+        print("""
+*********************************************
+***** Elija una opcion valida del menu ******
+*********************************************""")
+        continue
+
+# **** Indicaciones ****
+
+#Permite el registro de las reservaciones bajo las condiciones señaladas
+    #Solamente registra salas existentes [CHECK]
+    #Solamente registra reservaciones para clientes existentes [CHECK]
+    #No permite el registro de eventos simultáneos en la misma sala [CHECK]
+    #Solamente permite el registro de salas con, al menos, dos días de anticipación [CHECK]
+    #Se debe generar un folio único para cada reservación [CHECK]
+#Permite editar el nombre del evento para una reservación ya hecha [CHECK]
+#Obtiene el reporte de reservaciones para una fecha con los datos especificados [CHECK]
+#Permite registrar nuevos clientes con los datos indicados [CHECK]
+#Permite registrar nuevas salas con los datos indicados [CHECK]
